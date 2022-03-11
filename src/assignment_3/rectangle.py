@@ -72,7 +72,7 @@ def main():
     print(f"\nDot product : {dot_product}, should be close to 0 since the 2 sides of the rectangle are orthogonal")
 
     normal_vector = np.cross(w_vec_line_1, w_vec_line_2)
-    print("\nNormal of planar patch containing the rectangle")
+    print("\nNormal to the planar patch containing the rectangle")
     print(normal_vector)
 
     return
