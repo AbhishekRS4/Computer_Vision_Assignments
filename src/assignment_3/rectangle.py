@@ -9,6 +9,20 @@ def compute_vanishing_point(line_1_params, line_2_params):
     vp_y = line_1_params[0] * vp_x + line_1_params[1]
     return np.array([vp_x, vp_y])
 
+def compute_vanishing_point_lstsq(line_coefs):
+    line_coefs = np.array(line_coefs)
+    # y = a*x + b
+    a = line_coefs[:, 0]
+    b = line_coefs[:, 1]
+
+    # [-a_n, 1] * [x,y]^T = b_n
+    coef = np.stack([-a, np.ones(len(a))], axis=1)
+
+    # Solve for minimizing ||b - [-a, 1] * [x,y]^T||
+    res = np.linalg.lstsq(coef, b, rcond=None)
+
+    return res[0]
+
 def compute_line_params(line):
     # Use first two lines to compute the equation of the lines
     line_x = line[[0, 2]].reshape(-1)
@@ -44,15 +58,22 @@ def main():
     line_1 = read_lines_numpy_data("par_lines_1.npy")
     line_2 = read_lines_numpy_data("par_lines_2.npy")
 
-    par_set_1_line_1 = compute_line_params(line_1[0])
-    par_set_1_line_2 = compute_line_params(line_1[1])
-    vp_1 = compute_vanishing_point(par_set_1_line_1, par_set_1_line_2)
+    # par_set_1_line_1 = compute_line_params(line_1[0])
+    # par_set_1_line_2 = compute_line_params(line_1[1])
+    # vp_1 = compute_vanishing_point(par_set_1_line_1, par_set_1_line_2)
+    
+
+    par_set_1_lines = [compute_line_params(x) for x in line_1]
+    vp_1 = compute_vanishing_point_lstsq(par_set_1_lines)
     print("\nVanishing point for parallel lines set 1")
     print(vp_1)
 
-    par_set_2_line_1 = compute_line_params(line_2[0])
-    par_set_2_line_2 = compute_line_params(line_2[1])
-    vp_2 = compute_vanishing_point(par_set_2_line_1, par_set_2_line_2)
+    # par_set_2_line_1 = compute_line_params(line_2[0])
+    # par_set_2_line_2 = compute_line_params(line_2[1])
+    # vp_2 = compute_vanishing_point(par_set_2_line_1, par_set_2_line_2)
+
+    par_set_2_lines = [compute_line_params(x) for x in line_2]
+    vp_2 = compute_vanishing_point_lstsq(par_set_2_lines)
     print("\nVanishing point for parallel lines set 2")
     print(vp_2)
 
