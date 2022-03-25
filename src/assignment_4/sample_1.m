@@ -15,18 +15,9 @@ function sample_1(window_size, method)
     disparity = compute_disparity(left_image_gray, right_image_gray, window_size, method);
     
     figure(1);
-    subplot(2,2,1),
-    imshow(left_image_gray);
-    subplot(2,2,2),
-    imshow(right_image_gray);
-    subplot(2,2,3),
-    imshow(gt_disparity);
-    subplot(2,2,4),
-    imshow(gt_disparity);
-    
-    figure(2);
-    subplot(1,2,1),
-    imshow(disparity);
-    subplot(1,2,2),
-    imshow(gt_disparity);
+    sgtitle("Disparity computation for stereo images");
+    subplot(2,2,1),imshow(left_image_gray),title("stereo left image");
+    subplot(2,2,2),imshow(right_image_gray),title("stereo right image");
+    subplot(2,2,3),imshow(gt_disparity),title("ground truth disparity map");
+    subplot(2,2,4),imshow(disparity),title("computed disparity map");
 end
