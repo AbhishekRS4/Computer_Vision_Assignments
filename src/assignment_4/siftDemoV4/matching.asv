@@ -1,0 +1,19 @@
+[num, locs, x_disp, y_disp] = match_disp('tsukuba1.pgm', 'tsukuba2.pgm');
+idx = find(y_disp < 1 & y_disp > -1);
+
+x_disp= x_disp(idx);
+
+x_loc = locs(:, 1);
+y_loc = locs(:, 2);
+
+image = imread('tsukuba1.pgm');
+[rows, cols] = size(image); 
+
+zeros(rows, cols);
+for y = 1:rows
+    for x = 1:cols
+        
+    end
+end
+
+;
