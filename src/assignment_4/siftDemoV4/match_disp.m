@@ -21,7 +21,7 @@ function [num, locs, x_disp, y_disp] = match_disp(image1, image2)
 %
 % distRatio: Only keep matches in which the ratio of vector angles from the
 %   nearest to second nearest neighbor is less than distRatio.
-distRatio = 0.6;   
+distRatio = 0.8;   
 
 % For each descriptor in the first image, select its match to second image.
 des2t = des2';                          % Precompute matrix transpose
@@ -30,7 +30,10 @@ for i = 1 : size(des1,1)
    [vals,indx] = sort(acos(dotprods));  % Take inverse cosine and sort results
 
    % Check if nearest neighbor has angle less than distRatio times 2nd.
-   if (vals(1) < distRatio * vals(2))
+    x_disp_n = loc1(i,2) - loc2(indx(1),2);
+    y_disp_n =  loc1(i,1) - loc2(indx(1),1);
+   if (x_disp_n > 0 && x_disp_n < 20 && abs(y_disp_n) < 1 ...
+       && vals(1) < distRatio * vals(2))
       match(i) = indx(1);
    else
       match(i) = 0;

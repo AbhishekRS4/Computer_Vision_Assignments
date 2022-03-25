@@ -24,6 +24,7 @@ for y = 1:rows
         z(y,x) = x_disp(argmin);
     end
 end
+
 figure
 hold on
 [M,c] = contourf(z);
