@@ -18,8 +18,10 @@ function disparity=compute_disparity(left_image_gray, right_image_gray, window_s
         %for x=window_size:window_size + 20
             left_image_patch = left_image_gray(y:y+window_size, x:x+window_size);
             if method == "absolute_diff"
+                display("Goodness fit measure - absolute difference");
                 match_index_x = get_index_from_absolute_difference(y, x, left_image_patch, right_image_gray, image_width, window_size, window_search_range);
             elseif method == "norm_cross_corr"
+                display("Goodness fit measure - normalized cross correlation");
                 match_index_x = get_index_from_cross_correlation(y, x, left_image_patch, right_image_gray, image_width, window_size, window_search_range);
             end
             disparity(y, x) = abs(match_index_x - x);
