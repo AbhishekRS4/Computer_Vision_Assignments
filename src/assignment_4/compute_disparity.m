@@ -6,32 +6,38 @@ function disparity=compute_disparity(left_image_gray, right_image_gray, window_s
     image_width = image_shape(2);
     
     disparity = zeros(image_height, image_width);
-    display(size(disparity));
+    fprintf("Image size = %d %d\n", size(disparity));
     
     window_search_range = 19;
+    disparity_scaling_factor = 16;
     
-    display("started computing disparity map");
+    if method == "absolute_diff"
+        fprintf("Goodness fit measure - absolute difference\n");
+        fprintf("window size = %d, window search range = %d\n", window_size, window_search_range);
+    elseif method == "norm_cross_corr"
+        fprintf("Goodness fit measure - normalized cross correlation\n");
+        fprintf("window size = %d\n", window_size);
+    end
     
+    fprintf("Started computing disparity map\n");
     for y=window_size:(image_height-window_size-1)
     %for y=window_size:window_size
         for x=window_size:(image_width-window_size-1)
         %for x=window_size:window_size + 20
             left_image_patch = left_image_gray(y:y+window_size, x:x+window_size);
             if method == "absolute_diff"
-                display("Goodness fit measure - absolute difference");
                 match_index_x = get_index_from_absolute_difference(y, x, left_image_patch, right_image_gray, image_width, window_size, window_search_range);
             elseif method == "norm_cross_corr"
-                display("Goodness fit measure - normalized cross correlation");
-                match_index_x = get_index_from_cross_correlation(y, x, left_image_patch, right_image_gray, image_width, window_size, window_search_range);
+                match_index_x = get_index_from_cross_correlation(y, x, left_image_patch, right_image_gray, image_width, window_size);
             end
             disparity(y, x) = abs(match_index_x - x);
         end 
     end
-    display("finished computing disparity map");
-    disparity = uint8(disparity * 16);
+    disparity = uint8(disparity * disparity_scaling_factor);
+    fprintf("finished computing disparity map\n");
 end
 
-function match_index_x_cc = get_index_from_cross_correlation(y, x, left_image_patch, right_image, image_width, window_size, window_search_range)
+function match_index_x_cc = get_index_from_cross_correlation(y, x, left_image_patch, right_image, image_width, window_size)
     x_min = 1;
     x_max = image_width;
     max_cc = 0;
@@ -40,13 +46,13 @@ function match_index_x_cc = get_index_from_cross_correlation(y, x, left_image_pa
     
     right_image_patch = right_image(y:y+window_size, x_min:x_max);
     cross_correlation = normxcorr2(left_image_patch, right_image_patch);
-    %display(cross_correlation);
+    %fprintf(cross_correlation);
     [y_peak, x_peak] = find(cross_correlation==max(cross_correlation(:)));
-    %return;
-    %display(size(cross_correlation));
-    %display(x_peak);
+    
+    %fprintf(size(cross_correlation));
+    %fprintf(x_peak);
     match_index_x_cc = x_peak(1, 1) - window_size;
-    %display(match_index_x_cc);
+    %fprintf(match_index_x_cc);
 end
 
 function match_index_x_ab = get_index_from_absolute_difference(y, x, left_image_patch, right_image, image_width, window_size, window_search_range)
